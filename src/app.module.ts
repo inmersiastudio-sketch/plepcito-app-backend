@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BullModule } from '@nestjs/bull';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { PlansModule } from './plans/plans.module';
+import { PipelineModule } from './pipeline/pipeline.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -23,7 +27,19 @@ import { AuthModule } from './auth/auth.module';
         synchronize: config.get<string>('NODE_ENV') !== 'production',
       }),
     }),
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        redis: {
+          host: config.get<string>('REDIS_HOST', 'localhost'),
+          port: config.get<number>('REDIS_PORT', 6379),
+        },
+      }),
+    }),
+    StorageModule,
     AuthModule,
+    PlansModule,
+    PipelineModule,
   ],
   controllers: [AppController],
   providers: [AppService],

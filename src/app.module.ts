@@ -2,15 +2,19 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bull';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PlansModule } from './plans/plans.module';
 import { PipelineModule } from './pipeline/pipeline.module';
 import { StorageModule } from './storage/storage.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { AlertsModule } from './alerts/alerts.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -40,6 +44,8 @@ import { StorageModule } from './storage/storage.module';
     AuthModule,
     PlansModule,
     PipelineModule,
+    NotificationsModule,
+    AlertsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
